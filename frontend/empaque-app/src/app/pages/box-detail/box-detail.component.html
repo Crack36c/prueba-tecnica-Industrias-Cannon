@@ -1,0 +1,78 @@
+<button class="text-indigo-600 hover:text-indigo-800 text-sm font-medium mb-4 inline-flex items-center gap-1" (click)="goBack()">
+  ← Volver a Cajas
+</button>
+
+@if (box) {
+  <!-- Header card -->
+  <div class="bg-white rounded-xl shadow p-6 mb-6">
+    <h2 class="text-2xl font-bold text-gray-900 mb-3">{{ box.boxCode }}</h2>
+    <div class="flex gap-4 items-center flex-wrap text-sm text-gray-600">
+      <span><strong class="text-gray-800">ProductCode:</strong> {{ box.productCode }}</span>
+      <span><strong class="text-gray-800">Capacity:</strong> {{ box.currentCount }} / {{ box.capacity }}</span>
+      @if (box.status === 'OPEN') {
+        <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold">{{ box.status }}</span>
+      } @else {
+        <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold">{{ box.status }}</span>
+      }
+    </div>
+  </div>
+
+  @if (error) {
+    <div class="bg-red-50 text-red-700 border border-red-200 rounded-lg p-3 mb-4">{{ error }}</div>
+  }
+
+  <!-- Sección Empacar (solo OPEN) -->
+  @if (box.status === 'OPEN') {
+    <div class="bg-white rounded-xl shadow p-6 mb-6">
+      <h3 class="text-base font-semibold text-gray-800 mb-3">Empacar unidad</h3>
+      <div class="flex gap-3 items-center">
+        <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 min-w-[220px]" [(ngModel)]="selectedTowelId">
+          @for (t of looseTowels; track t.towelId) {
+            <option [ngValue]="t.towelId">{{ t.itemCode }} ({{ t.productCode }})</option>
+          }
+          @empty {
+            <option [ngValue]="null" disabled>No hay unidades disponibles</option>
+          }
+        </select>
+        <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-sm font-medium" (click)="pack()" [disabled]="loading || !selectedTowelId">Empacar</button>
+      </div>
+    </div>
+  }
+
+  <!-- Contenido de la caja -->
+  <div class="bg-white rounded-xl shadow p-6 mb-6">
+    <h3 class="text-base font-semibold text-gray-800 mb-3">Contenido de la caja</h3>
+    <table class="w-full border-collapse">
+      <thead>
+        <tr>
+          <th class="text-left px-3 py-2.5 bg-gray-50 text-gray-700 font-semibold text-sm border-b border-gray-200">ItemCode</th>
+          <th class="text-left px-3 py-2.5 bg-gray-50 text-gray-700 font-semibold text-sm border-b border-gray-200">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (t of packedTowels; track t.towelId) {
+          <tr class="border-b border-gray-100">
+            <td class="px-3 py-2.5 text-sm text-gray-700">{{ t.itemCode }}</td>
+            <td class="px-3 py-2.5 text-sm">
+              @if (box.status === 'OPEN') {
+                <button class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 disabled:opacity-50" (click)="unpack(t)" [disabled]="loading">Sacar</button>
+              }
+            </td>
+          </tr>
+        }
+        @empty {
+          <tr>
+            <td colspan="2" class="text-center text-gray-400 py-6 text-sm">La caja está vacía</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Cerrar caja (solo OPEN) -->
+  @if (box.status === 'OPEN') {
+    <button class="bg-amber-500 text-white px-6 py-2.5 rounded-lg text-base font-semibold hover:bg-amber-600" (click)="closeBox()">Cerrar caja</button>
+  }
+} @else if (!error) {
+  <p class="text-gray-500 text-sm">Cargando...</p>
+}

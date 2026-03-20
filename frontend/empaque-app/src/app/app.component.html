@@ -1,0 +1,15 @@
+<nav class="flex items-center gap-4 px-6 py-3 bg-gradient-to-r from-indigo-700 to-blue-600 text-white shadow-lg font-['Inter']">
+  <span class="font-bold text-lg tracking-tight mr-auto select-none">Sistema de Empaque</span>
+  <a routerLink="/towels" routerLinkActive="!text-white !bg-white/20"
+     class="text-blue-200 no-underline px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-white/20 hover:text-white">
+    Unidades
+  </a>
+  <a routerLink="/boxes" routerLinkActive="!text-white !bg-white/20"
+     class="text-blue-200 no-underline px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-white/20 hover:text-white">
+    Cajas
+  </a>
+</nav>
+
+<main class="max-w-5xl mx-auto py-8 px-4">
+  <router-outlet />
+</main>
